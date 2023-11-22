@@ -1,0 +1,139 @@
+=================== Install and Configure the Jenkins ===============
+
+01** Go to AWS and cerat new EC2 instence: JENKINE-SERVER
+	- Amazon Linux: Amazon Linux 2 AMI 
+	- Creat Key pair : RSA format .pem for SSH
+	- Launching instances and run them
+
+02** Copy Public IP and run the VM in MobaXtrem
+
+03 ** Install Jenkins:
+
+      https://www.jenkins.io/doc/book/installing/linux/
+      https://www.jenkins.io/doc/tutorials/tutorial-for-installing-jenkins-on-AWS/
+	$ sudo yum update –y
+	$ sudo wget -O /etc/yum.repos.d/jenkins.repo \
+	    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+	$ sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+	$ sudo yum upgrade
+	$ sudo amazon-linux-extras install epel
+	$ sudo amazon-linux-extras install java-openjdk11 -y
+	$ sudo yum install java-11-amazon-corretto -y
+	$ sudo yum install jenkins -y
+	$ sudo systemctl enable jenkins       //Enable the Jenkins service to start at boot
+	$ sudo systemctl start jenkins        //Start Jenkins as a service
+	$ java -version
+	$ javac -version
+	$ sudo systemctl status jenkins
+
+04**  renum hostname VM server
+	$ hostname JENKINS-SERVER
+	$ cd /etc
+	$ sudo vim hostname = Jenkins-Server
+
+05** Go in AWS in Jenkins-Server EC2 in secrety 
+	- and add new rool: Type: Custem TCP port: 8080  ip4
+
+06** Copy Public IP and Go to browser and past them like: 54.92.160.50:8080 
+	- copy pass :/var/lib/jenkins/secrets/initialAdminPassword
+		$ sudo cat /var/lib/jenkins/secrets/initialAdminPassword // 398efdbd002e4fe99139791aaf3284bc
+	- past the password  in jenkins
+	- Install suggested plugins
+	- creat  Username and pass
+		- user: aziz  pass: aziz123
+	- save and staret using jenkins
+
+========================== Install and Confugure Maven ========================
+go to maven Site Web and download this:
+  
+
+
+https://maven.apache.org/install.html
+Copy the download link from https://maven.apache.org/download.cgi
+	$ sudo su  & cd ~
+	$ cd /opt
+	$ wget https://dlcdn.apache.org/maven/maven-3/3.9.5/binaries/apache-maven-3.9.5-bin.tar.gz
+	$ tar -xzvf apache-maven-3.9.5-bin.tar.gz
+	$ ls
+	$ mv apache-maven-3.9.5 maven
+	$ ll
+	$ cd maven
+	$ cd bin/
+	$ ./mvn -v  
+	$ cd ~
+	$ pwd
+	$ ll -a      //It will show the hidden files also
+	$ vim .bash_profile
+	$ find / -name java-11*
+
+     - enter below lines below the 2nd fi
+	M2_HOME=/opt/maven
+	M2=/opt/maven/bin
+     - find / -name java-11* // sherch java path in system
+	JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.20.0.8-1.amzn2.0.1.x86_64  
+	PATH=$PATH:$HOME/bin:$JAVA_HOME:$M2_HOME:$M2
+	$ echo $PATH
+	$ sudo source .bash_profile
+	$ echo $PATH
+	$ mvn -v
+	Java Path -- /usr/lib/jvm/java-11-openjdk-11.0.20.0.8-1.amzn2.0.1.x86_64
+	MAVEN_HOME:/opt/maven     //You need to add this at Jenkins Job under Maven Installations
+
+================ Install Maven Plugin and Configure Jenkins for Maven ==================================
+
+01** go to jenkins in plugin install : Maven Integration 
+
+02** go to Manage Jenkins in tools:
+	- add JDK : 
+		- name: java11
+		- JAVA_HOME: /usr/lib/jvm/java-11-openjdk-11.0.20.0.8-1.amzn2.0.1.x86_64
+	- add Maven:
+		- name: Maven
+		- deckoch instalation automaticlly
+		- MAVEN_HOME: /opt/maven
+	- apply and save
+
+03** go to plugin > installed plugion serche on github and coche this: Github Plugin and deckoche Github Bransh
+
+04** install git 
+	$ sudo yam install git
+
+05** now go to jenkins and creat new test 
+
+===============================Ansible Server setup and Ansible Installation==================================
+$ sudo nano /etc/hostname
+$ useradd ansadmin
+$ passwd ansadmin
+$ visudo 
+ansadmin ALL=(ALL)       NOPASSWD: ALL      //add this in sudo file.
+$ cd /etc/ssh
+$ nano sshd_config
+$ service sshd reload
+$ ssh-keygen
+public key is at /home/ansadmin/.ssh/id_rsa.pub
+$ sudo su , amazon-linux-extras install ansible2
+$ ansible --version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
